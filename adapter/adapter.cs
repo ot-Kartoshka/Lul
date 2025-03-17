@@ -7,7 +7,7 @@ namespace RefactoringGuru.DesignPatterns.Adapter.Conceptual
         string GetRequest();
     }
 
-    class Adaptee
+    public class Adaptee
     {
         public string GetSpecificRequest()
         {
@@ -15,32 +15,46 @@ namespace RefactoringGuru.DesignPatterns.Adapter.Conceptual
         }
     }
 
-    class Adapter : ITarget
+    public class Adapter : ITarget
     {
         private readonly Adaptee _adaptee;
 
         public Adapter(Adaptee adaptee)
         {
-            this._adaptee = adaptee;
+            _adaptee = adaptee ?? throw new ArgumentNullException(nameof(adaptee));
         }
 
         public string GetRequest()
         {
-            return $"This is '{this._adaptee.GetSpecificRequest()}'";
+            return $"This is '{_adaptee.GetSpecificRequest()}'";
         }
     }
 
-    class adapter
+    public class adapter
     {
-        static void Main(string[] args)
+        public static int Main(string[] args)
         {
-            Adaptee adaptee = new Adaptee();
-            ITarget target = new Adapter(adaptee);
+            try
+            {
+                if (args == null)
+                {
+                    throw new ArgumentNullException(nameof(args));
+                }
 
-            Console.WriteLine("Adaptee interface is incompatible with the client.");
-            Console.WriteLine("But with adapter client can call it's method.");
+                Adaptee adaptee = new Adaptee();
+                ITarget target = new Adapter(adaptee);
 
-            Console.WriteLine(target.GetRequest());
+                Console.WriteLine("Adaptee interface is incompatible with the client.");
+                Console.WriteLine("But with adapter client can call its method.");
+                Console.WriteLine(target.GetRequest());
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error: {ex.Message}");
+                return 1;
+            }
         }
     }
 }
